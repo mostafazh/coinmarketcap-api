@@ -10,15 +10,17 @@ class Market(object):
 	_session = None
 	__DEFAULT_BASE_URL = 'https://api.coinmarketcap.com/v1/'
 	__DEFAULT_TIMEOUT = 120
+	__DEFAULT_CACHE_FILE_DIR = ''
 
-	def __init__(self, base_url = __DEFAULT_BASE_URL, request_timeout = __DEFAULT_TIMEOUT):
+	def __init__(self, base_url = __DEFAULT_BASE_URL, request_timeout = __DEFAULT_TIMEOUT, cache_file_dir = __DEFAULT_CACHE_FILE_DIR):
 		self.base_url = base_url
 		self.request_timeout = request_timeout
+		self.cache_file_dir = cache_file_dir 
 
 	@property
 	def session(self):
 		if not self._session:
-			self._session = requests_cache.core.CachedSession(cache_name='coinmarketcap_cache', backend='sqlite', expire_after=120)
+			self._session = requests_cache.core.CachedSession(cache_name=self.cache_file_dir + 'coinmarketcap_cache', backend='sqlite', expire_after=120)
 			self._session.headers.update({'Content-Type': 'application/json'})
 			self._session.headers.update({'User-agent': 'coinmarketcap - python wrapper \
 		around coinmarketcap.com (github.com/mrsmn/coinmarketcap-api)'})
